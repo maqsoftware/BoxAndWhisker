@@ -1,0 +1,12 @@
+{
+  "name": "visual",
+  "dependencies": {
+    "@types/d3": "^3.5.36",
+    "d3": "^3.5.5",
+    "jquery": "^3.3.1",
+    "maq-utils-chartutils": "^1.5.1",
+    "powerbi-models": "^1.0.6",
+    "powerbi-visuals-utils-formattingutils": "^1.0.0",
+    "powerbi-visuals-utils-interactivityutils": "^3.0.0"
+  }
+}

@@ -37,7 +37,7 @@ module powerbi.extensibility.visual {
             }
 
             // tslint:disable-next-line:no-any
-            return function (a: any, b: any): number {
+            return  (a: any, b: any): number =>{
                 const result: number = (a[objProperty] < b[objProperty]) ? -1 : (a[objProperty] > b[objProperty]) ? 1 : 0;
 
                 return result * sortOrder;
@@ -97,7 +97,7 @@ module powerbi.extensibility.visual {
 
         export function getColor(rangeConfig: IRangeSettings, d: IBoxWhiskerViewModel): string {
             if (d) {
-                const legendData: ILegendDataPoint[] = Visual.legendDataPoints.filter(function (legend: ILegendDataPoint): boolean {
+                const legendData: ILegendDataPoint[] = Visual.legendDataPoints.filter((legend: ILegendDataPoint): boolean =>{
                     return legend.category === d.categoryColor;
                 });
 

@@ -4,12 +4,12 @@
     "displayName": "Box and Whisker by MAQ Software",
     "guid": "BoxandWhiskerByMAQ1823AD39DT234AB532063E128AX",
     "visualClassName": "Visual",
-    "version": "3.1.5",
+    "version": "3.2.0",
     "description": "This visual displays data distribution into quartiles in a box with a thin line going through it (whiskers) indicating variability outside the upper and lower quartiles.",
     "supportUrl": "https://github.com/maqsoftware/PowerBI-visuals/issues",
     "gitHubUrl": "https://github.com/maqsoftware/PowerBI-visuals/"
   },
-  "apiVersion": "2.1.0",
+  "apiVersion": "2.5.0",
   "author": {
     "name": "MAQ Software",
     "email": "support@maqsoftware.com"
@@ -22,13 +22,14 @@
     "node_modules/d3/d3.min.js",
     "node_modules/lodash/lodash.min.js",
     "node_modules/globalize/lib/globalize.js",
+    "node_modules/powerbi-visuals-utils-tooltiputils/lib/index.js",
     "node_modules/globalize/lib/cultures/globalize.culture.en-US.js",
     "node_modules/powerbi-visuals-utils-typeutils/lib/index.js",
     "node_modules/powerbi-visuals-utils-svgutils/lib/index.js",
     "node_modules/powerbi-visuals-utils-dataviewutils/lib/index.js",
     "node_modules/powerbi-visuals-utils-formattingutils/lib/index.js",
     "node_modules/powerbi-visuals-utils-interactivityutils/lib/index.js",
-    "node_modules/maq-utils-chartutils/lib/index.js"
+    "node_modules/maq-visuals-chartutils/lib/index.js"
   ],
   "style": "style/visual.less",
   "capabilities": "capabilities.json",

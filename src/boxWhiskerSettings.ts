@@ -27,7 +27,7 @@
 module powerbi.extensibility.visual {
     import LegendPosition = powerbi.extensibility.utils.chart.legend.LegendPosition;
 
-    export module enumSettings {
+    export module boxWhiskerSettings {
         // Default values for format settings
         export function getDefaultGradientSelectorSettings(): IGradientSelectorSettings {
             return {
@@ -1232,9 +1232,9 @@ module powerbi.extensibility.visual {
                 selector: null
             });
         }
-        /* do not update*/
+        // do not update
         export module DataViewObjects {
-            /** Gets the value of the given object/property pair. */
+            // Gets the value of the given object/property pair.
             export function getValue<T>(objects: DataViewObjects, propertyId: DataViewObjectPropertyIdentifier, defaultValue?: T): T {
 
                 if (!objects) { return defaultValue; }
@@ -1245,25 +1245,23 @@ module powerbi.extensibility.visual {
                 return DataViewObject.getValue(object, propertyId.propertyName, defaultValue);
             }
 
-            /** Gets an object from objects. */
+            // Gets an object from objects. 
             export function getObject(objects: DataViewObjects, objectName: string, defaultValue?: DataViewObject): DataViewObject {
                 if (objects && objects[objectName]) {
-                    const object: DataViewObject = <DataViewObject>objects[objectName];
+                     
 
-                    return object;
+                    return <DataViewObject>objects[objectName];
                 } else { return defaultValue; }
             }
 
-            /** Gets a map of user-defined objects. */
+            // Gets a map of user-defined objects.
             export function getUserDefinedObjects(objects: DataViewObjects, objectName: string): DataViewObjectMap {
                 if (objects && objects[objectName]) {
-                    const map: DataViewObjectMap = <DataViewObjectMap>objects[objectName];
-
-                    return map;
+                    return <DataViewObjectMap>objects[objectName];
                 }
             }
 
-            /** Gets the solid color from a fill property. */
+            //Gets the solid color from a fill property. 
             export function getFillColor(
                 objects: DataViewObjects,
                 propertyId: DataViewObjectPropertyIdentifier,
@@ -1307,7 +1305,7 @@ module powerbi.extensibility.visual {
                 return propertyValue;
             }
 
-            /** Gets the solid color from a fill property using only a propertyName */
+            // Gets the solid color from a fill property using only a propertyName 
             export function getFillColorByPropertyName(objects: DataViewObjects, propertyName: string, defaultColor?: string): string {
                 const value: Fill = DataViewObject.getValue(objects, propertyName);
                 if (!value || !value.solid) { return defaultColor; }
@@ -1338,6 +1336,6 @@ module powerbi.extensibility.visual {
 
             return defaultValue;
         }
-        /* do not update*/
+        // do not update
     }
 }

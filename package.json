@@ -5,7 +5,7 @@
     "@types/jquery": "^3.3.29",
     "@types/lodash": "4.14.108",
     "d3": "^3.5.5",
-    "jquery": "^3.4.0",
+    "jquery": "^3.5.0",
     "lodash": "4.17.15",
     "maq-visuals-chartutils": "^3.2.0",
     "powerbi-models": "1.1.0",

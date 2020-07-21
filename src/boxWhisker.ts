@@ -212,16 +212,13 @@ module powerbi.extensibility.visual {
             }
         }
 
-        public visualTransformHelper(groups, iterator, dataPoint, host, dataView, boxWhiskerdataPoints, boxAndWhiskerHelperArray, currentCat,
-            currentXParent, catMaxLen, xParentMaxLen) {
+        public visualTransformHelper(groups, iterator, dataPoint, host, dataView, boxWhiskerdataPoints, boxAndWhiskerHelperArray, currentCat,currentXParent, catMaxLen, xParentMaxLen, yAxisConfig) {
             groups.forEach((group: DataViewValueColumnGroup) => {
                 for (iterator = 0; iterator < group.values[0].values.length; iterator++) {
                     if (group.values[0].values[iterator] !== null) {
                         dataPoint = this.updateDatapoints(dataPoint);
-                        const selectionId: visuals.ISelectionId = host.createSelectionIdBuilder()
-                            .withCategory(dataView.categorical.categories[0], iterator)
-                            .withSeries(dataView.categorical.values, group)
-                            .createSelectionId();
+                        const selectionId: visuals.ISelectionId = host.createSelectionIdBuilder().withCategory(dataView.categorical.categories[0], iterator)
+                            .withSeries(dataView.categorical.values, group).createSelectionId();
                         for (let k: number = 0; k < group.values.length; k++) {
                             if (group.values[k].source.roles.hasOwnProperty('measure')) {
                                 boxAndWhiskerHelperArray[2] = k;
@@ -241,9 +238,7 @@ module powerbi.extensibility.visual {
                                 dataPoint.categoryColor = boxWhiskerUtils.convertToString(group.values[k].values[iterator]);
                                 this.categoryColorData.push(group.values[k].values[iterator]);
                             }
-                            const formatter0: utils.formatting.IValueFormatter = valueFormatter.create({
-                                format: group.values[k].source.format ? group.values[k].source.format : valueFormatter.DefaultNumericFormat
-                            });
+                            const formatter0: utils.formatting.IValueFormatter = valueFormatter.create({format: group.values[k].source.format ? group.values[k].source.format : valueFormatter.DefaultNumericFormat});
                             const tooltipDataPoint: ITooltipDataPoints = {
                                 name: group.values[k].source.displayName,
                                 value: formatter0.format(parseFloat(boxWhiskerUtils.convertToString(group.values[k].values[iterator])))
@@ -252,9 +247,7 @@ module powerbi.extensibility.visual {
                         }
                         this.highlight = dataView.categorical.values[0].highlights ? true : false;
                         for (let cat1: number = 0; cat1 < dataView.categorical.categories.length; cat1++) {
-                            boxAndWhiskerHelperArray[0] = valueFormatter.create({
-                                format: dataView.categorical.categories[cat1].source.format
-                            });
+                            boxAndWhiskerHelperArray[0] = valueFormatter.create({format: dataView.categorical.categories[cat1].source.format});
                             const data: any = dataView.categorical.categories[cat1];
                             if (data.source.roles.hasOwnProperty('category')) {
                                 dataPoint.category = boxAndWhiskerHelperArray[0].format(data.values[iterator]);
@@ -299,8 +292,14 @@ module powerbi.extensibility.visual {
                         if (Visual.xParentPresent) {
                             currentXParent = dataPoint.xCategoryParent;
                         }
-                        if (currentCat.length > catMaxLen) {
-                            catMaxLen = currentCat.length;
+                        let currentCatProperties: TextProperties = {
+                            fontFamily: yAxisConfig.labelsFontFamily,
+                            fontSize: `${yAxisConfig.fontSize}px`,
+                            text: currentCat
+                        }
+                        let currentCatLength = textMeasurementService.measureSvgTextWidth(currentCatProperties);
+                        if (currentCatLength >= catMaxLen) {
+                            catMaxLen = currentCatLength;
                             this.catLongestText = currentCat;
                         }
                         if (currentXParent.length > xParentMaxLen) {
@@ -490,7 +489,8 @@ module powerbi.extensibility.visual {
             options: VisualUpdateOptions, dataView: DataView,
             height: number,
             colors: IColorPalette,
-            host: IVisualHost): IBoxWhiskerDataPoints {
+            host: IVisualHost,
+            yAxisConfig:IAxisSettings): IBoxWhiskerDataPoints {
             const boxWhiskerdataPoints: IBoxWhiskerDataPoints = {
                 dataPoints: [],
                 xTitleText: '',
@@ -517,7 +517,7 @@ module powerbi.extensibility.visual {
             let formatter: utils.formatting.IValueFormatter;
             let boxAndWhiskerHelperArray: any = [formatter, name, yParentIndex, xParentIndex];
             boxAndWhiskerHelperArray = this.visualTransformHelper(groups, iterator, dataPoint, host, dataView, boxWhiskerdataPoints, boxAndWhiskerHelperArray, currentCat,
-                currentXParent, catMaxLen, xParentMaxLen);
+                currentXParent, catMaxLen, xParentMaxLen, yAxisConfig);
             formatter = boxAndWhiskerHelperArray[0]; name = boxAndWhiskerHelperArray[1];
             yParentIndex = boxAndWhiskerHelperArray[2]; xParentIndex = boxAndWhiskerHelperArray[3];
             for (const iPoints of boxWhiskerdataPoints.dataPoints) {
@@ -1796,7 +1796,7 @@ module powerbi.extensibility.visual {
                         .parentNode.getAttribute('transform').indexOf(',') >= 0 ? xTicks[0][j - 1]
                             .parentNode.getAttribute('transform').indexOf(',') : xTicks[0][j - 1]
                                 .parentNode.getAttribute('transform').length - 1))) / 2;
-                                tickSettingHelperArray[1] = j - 1;
+                tickSettingHelperArray[1] = j - 1;
             }
             return tickSettingHelperArray;
         }
@@ -3117,16 +3117,7 @@ module powerbi.extensibility.visual {
                 this.viewport = options.viewport;
                 const dataView: DataView = this.dataView = options.dataViews && options.dataViews[0] ? options.dataViews[0] : null;
                 const sortSetting: ISortSettings = this.sortSetting = boxWhiskerSettings.getSortSettings(dataView);
-                const data: IBoxWhiskerDataPoints = this.data = this.visualTransform(
-                    options, dataView, this.viewport.height, this.colorPalette, this.host);
-                this.renderHelper(data);
-                const visualContext: this = this;
-                Visual.dataValues = [];
-                data.dataPoints.forEach((d: IBoxWhiskerViewModel): void => {
-                    Visual.dataValues.push(d.value);
-                });
-                Visual.xTitleText = data.xTitleText;
-                Visual.yTitleText = data.yTitleText;
+                
                 const flipSetting: IFlipSettings = this.flipSetting = boxWhiskerSettings.getFlipSettings(dataView);
                 const yAxisConfig: IAxisSettings = this.yAxisConfig = boxWhiskerSettings.getAxisSettings(this.dataView, 'Y');
                 const xAxisConfig: IAxisSettings = this.xAxisConfig = boxWhiskerSettings.getAxisSettings(this.dataView, 'X');
@@ -3139,6 +3130,16 @@ module powerbi.extensibility.visual {
                 const tickSettings: ITickSettings = this.tickSetting = boxWhiskerSettings.getTickSettings(this.dataView);
                 const boxOptionsSettings: IBoxOptionsSettings = this.boxOptionsSetting = boxWhiskerSettings.getBoxOptionsSettings(this.dataView);
                 const meanSettings: IMeanSettings = this.meanSetting = boxWhiskerSettings.getMeanSettings(this.dataView);
+                const data: IBoxWhiskerDataPoints = this.data = this.visualTransform(
+                    options, dataView, this.viewport.height, this.colorPalette, this.host, yAxisConfig);
+                this.renderHelper(data);
+                const visualContext: this = this;
+                Visual.dataValues = [];
+                data.dataPoints.forEach((d: IBoxWhiskerViewModel): void => {
+                    Visual.dataValues.push(d.value);
+                });
+                Visual.xTitleText = data.xTitleText;
+                Visual.yTitleText = data.yTitleText;
                 let width: number = _.clone(options.viewport.width), height: number = _.clone(options.viewport.height);
                 const dataSizeValues: number[] = [];
                 data.dataPoints.forEach((d: IBoxWhiskerViewModel): void => { dataSizeValues.push(d.categorySize); });
